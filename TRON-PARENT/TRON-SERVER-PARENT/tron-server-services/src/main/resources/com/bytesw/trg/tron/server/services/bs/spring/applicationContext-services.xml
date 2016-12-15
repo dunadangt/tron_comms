@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<beans>
+    <bean id="tronService" name="tronService" class="com.bytesw.trg.tron.server.services.bs.TronServiceImpl" init-method="init" destroy-method="destroy">
+        <property name="serverListenPort" value="${tron.server.listen.port}" />
+        <property name="serviceType" value="${tron.service.type}"/>        
+        <property name="serviceName" value="${tron.service.server.name}"/>        
+        <property name="serviceText" value="${tron.service.server.text}"/>        
+    </bean>
+    
+    <bean id="serverPropertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:./server-configuration.properties</value>
+            </list>
+        </property>
+        <property name="ignoreUnresolvablePlaceholders" value="true" />
+        <property name="searchSystemEnvironment" value="true" />
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+    </bean>
+</beans>
