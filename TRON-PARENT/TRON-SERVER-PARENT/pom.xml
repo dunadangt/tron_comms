@@ -8,4 +8,9 @@
     </parent>
     <artifactId>TRON-SERVER-PARENT</artifactId>
     <packaging>pom</packaging>
+    <modules>
+        <module>tron-server-core</module>
+        <module>tron-server-services</module>
+        <module>tron-server-integration</module>
+    </modules>
 </project>

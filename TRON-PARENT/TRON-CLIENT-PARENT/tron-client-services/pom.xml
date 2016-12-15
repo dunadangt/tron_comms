@@ -3,13 +3,15 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.bytesw.trg</groupId>
-        <artifactId>TRON-PARENT</artifactId>
+        <artifactId>TRON-CLIENT-PARENT</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>TRON-CLIENT-PARENT</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>tron-client-core</module>
-        <module>tron-client-services</module>
-    </modules>
+    <artifactId>tron-client-services</artifactId>
+    <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>javax.jmdns</groupId>
+            <artifactId>jmdns</artifactId>
+        </dependency>
+    </dependencies>
 </project>
