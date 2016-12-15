@@ -4,10 +4,34 @@
     <groupId>com.bytesw.trg</groupId>
     <artifactId>TRON-PARENT</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
+    <modules>
+        <module>TRON-SERVER-PARENT</module>
+        <module>TRON-CLIENT-PARENT</module>
+        <module>tron-core</module>
+    </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.github.rickyclarkson</groupId>
+                <artifactId>jmdns</artifactId>
+                <version>3.4.2-r353-1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <repositories>
+        <repository>
+            <id>tron_comms-mvn-repo</id>
+            <url>https://github.com/dunadangt/tron_comms/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>
