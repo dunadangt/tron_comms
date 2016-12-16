@@ -8,4 +8,11 @@
     </parent>
     <artifactId>tron-client-core</artifactId>
     <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>com.bytesw.trg</groupId>
+            <artifactId>tron-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>

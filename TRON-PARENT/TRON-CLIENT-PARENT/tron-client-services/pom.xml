@@ -13,5 +13,14 @@
             <groupId>javax.jmdns</groupId>
             <artifactId>jmdns</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.bytesw.trg</groupId>
+            <artifactId>tron-client-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
     </dependencies>
 </project>

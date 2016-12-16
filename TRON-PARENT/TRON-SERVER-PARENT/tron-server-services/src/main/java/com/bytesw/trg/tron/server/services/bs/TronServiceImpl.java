@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author lvasquez
  */
-public class TronServiceImpl implements TronService, ServiceListener {
+public class TronServiceImpl implements TronService {
 
         static org.slf4j.Logger logger = LoggerFactory.getLogger(TronServiceImpl.class);
 
@@ -28,7 +28,7 @@ public class TronServiceImpl implements TronService, ServiceListener {
                         jmdns = JmDNS.create(InetAddress.getLocalHost());
                         ServiceInfo serviceInfo = ServiceInfo.create(serviceType, serviceName, serverListenPort, serviceText);
                         jmdns.registerService(serviceInfo);
-                        logger.info("Servidor registrado");
+                        logger.info("Servidor registrado [" + serviceInfo + "]");
                 } catch (IOException ex) {
                         logger.error("Error de inicializacion.", ex);
                 }
@@ -68,21 +68,6 @@ public class TronServiceImpl implements TronService, ServiceListener {
 
         public void setServiceText(String serviceText) {
                 this.serviceText = serviceText;
-        }
-
-        @Override
-        public void serviceAdded(ServiceEvent se) {
-                logger.info("Service Added [" + se.getInfo() + "]");
-        }
-
-        @Override
-        public void serviceRemoved(ServiceEvent se) {
-                logger.info("Service Removed [" + se.getInfo() + "]");
-        }
-
-        @Override
-        public void serviceResolved(ServiceEvent se) {
-                logger.info("Service Resolved [" + se.getInfo() + "]");
         }
 
 }

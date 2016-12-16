@@ -11,5 +11,6 @@
     <modules>
         <module>tron-client-core</module>
         <module>tron-client-services</module>
+        <module>tron-client-integration</module>
     </modules>
 </project>
