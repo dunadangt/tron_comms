@@ -1,8 +1,8 @@
 package com.bytesw.trg.tron.client.services.bs;
 
-import java.net.Inet4Address;
-import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceListener;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,12 @@ public class TronServiceListener implements ServiceListener {
         public void serviceResolved(ServiceEvent se) {
                 logger.info("Service Resolved [" + se.getInfo() + "]");
                 if (se.getInfo().getInetAddresses() != null && se.getInfo().getInetAddresses().length > 0) {
-                        getTronClientService().notifyServerFound(se.getInfo().getInetAddresses()[0], se.getInfo().getPort());
+                        try {
+                                InetAddress localAddress = ((javax.jmdns.impl.JmDNSImpl) se.getSource()).getLocalHost().getInetAddress();
+                                getTronClientService().notifyServerFound(se.getInfo().getInetAddresses()[0], se.getInfo().getPort(), localAddress);
+                        } catch (Exception ex) {
+                                logger.error("Error al iniciar conexion al servidor [" + ex.getMessage() + "]", ex);
+                        }
                 }
         }
 

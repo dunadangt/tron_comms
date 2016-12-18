@@ -10,5 +10,5 @@ public interface TronClientService {
         
         public void init();
         
-        public void notifyServerFound(InetAddress host, Integer port);
+        public void notifyServerFound(InetAddress host, Integer port, InetAddress localhost) throws Exception;
 }
