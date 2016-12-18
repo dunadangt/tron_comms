@@ -4,6 +4,7 @@ import com.bytesw.trg.core.dto.ClientServerRequest;
 import com.bytesw.trg.core.dto.NotificacionServidor;
 import com.bytesw.trg.core.dto.NotifyServerLocation;
 import com.bytesw.trg.tron.client.services.transport.ClientSideFilter;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -12,8 +13,12 @@ import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import javax.jmdns.JmDNS;
+import org.glassfish.grizzly.Connection;
 import org.glassfish.grizzly.connectionpool.SingleEndpointPool;
 import org.glassfish.grizzly.filterchain.FilterChainBuilder;
 import org.glassfish.grizzly.filterchain.TransportFilter;
@@ -43,11 +48,11 @@ public class TronClientServiceImpl implements TronClientService {
         private SingleEndpointPool pool;
         private Integer serverTransportTimeoutInSeconds = 1;
         private Integer serverConnectionTimeoutInSeconds = 1;
-        private Integer serverConnectionKeepAliveTimeInSeconds;
-        private Integer serverMaxPoolSize;
-        private Integer serverMinPoolSize;
-        private Integer clientListenerMaxPoolSize;
-        private Integer clientListenerMinPoolSize;
+        private Integer serverConnectionKeepAliveTimeInSeconds = 1;
+        private Integer serverMaxPoolSize = 1;
+        private Integer serverMinPoolSize = 1;
+        private Integer clientListenerMaxPoolSize = 1;
+        private Integer clientListenerMinPoolSize = 1;
 
         private TCPNIOTransport filterTransport;
 
@@ -167,6 +172,8 @@ public class TronClientServiceImpl implements TronClientService {
                 NotificacionServidor notificacionServidor = new NotificacionServidor();
                 notificacionServidor.setNotifyServerLocation(serverLocation);
                 queue.offer(notificacionServidor);
+                logger.info("Connected to server [" + host + "]: [" + port + "]");
+                logger.info("Listening on [" + localhost + "]: [" + clientListenerPort + "]");
         }
 
         public Integer getServerTransportTimeoutInSeconds() {
@@ -248,7 +255,26 @@ public class TronClientServiceImpl implements TronClientService {
 
         @Override
         public void writeToServer(ClientServerRequest request) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                Gson json = new Gson();
+                String jsonString = json.toJson(request);
+                Future<Connection> future = pool.take();
+                int timeout = serverTransportTimeoutInSeconds;
+
+                Connection connection = null;
+                try {
+                        connection = future.get(timeout, TimeUnit.SECONDS);
+                        connection.write(jsonString);
+                } catch (InterruptedException | ExecutionException | TimeoutException interruptedException) {
+                        logger.error("Error en escritura a servidor", interruptedException);
+                } finally {
+                        if (connection != null) {
+                                try {
+                                        pool.release(connection);
+                                } catch (Exception e) {
+                                        throw e;
+                                }
+                        }
+                }
         }
 
 }

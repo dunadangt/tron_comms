@@ -6,7 +6,18 @@
         <property name="serviceType" value="${tron.service.type}"/>        
         <property name="serviceName" value="${tron.service.server.name}"/>        
         <property name="serviceText" value="${tron.service.server.text}"/>        
-        <property name="serviceListenAddress" value="${tron.service.listen.address}"/>        
+        <property name="serviceListenAddress" value="${tron.service.listen.address}"/> 
+        
+        <property name="listenerPort" value="${tron.transport.server.listen.port}" />
+        <property name="clientCorePoolSize" value="${tron.transport.client.core.pool.size}" />
+        <property name="clientMaxPoolSize" value="${tron.transport.client.max.pool.size}" />
+        <property name="keepAliveTimeInSeconds" value="${tron.transport.client.keep.alive.time.in.seconds}" />
+        <property name="transactionTimeoutInSeconds" value="${tron.transport.client.timeout.in.seconds}" />
+        <property name="corePoolSize" value="${tron.transport.core.pool.size}" />
+        <property name="maxPoolSize" value="${tron.transport.max.pool.size}" />
+        <property name="poolConnectionTimeoutInSeconds" value="${tron.pool.connection.timeout.in.seconds}" />
+        <property name="writeTimeoutInSeconds" value="${tron.write.timeout.in.seconds}" />
+        <property name="clientPoolSize" value="${tron.client.pool.size}" />
     </bean>
     
     <bean id="serverPropertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
