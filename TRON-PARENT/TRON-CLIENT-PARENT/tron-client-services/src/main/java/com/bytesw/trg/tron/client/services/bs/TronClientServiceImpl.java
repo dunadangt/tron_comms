@@ -1,5 +1,6 @@
 package com.bytesw.trg.tron.client.services.bs;
 
+import com.bytesw.trg.core.dto.ClientServerRequest;
 import com.bytesw.trg.core.dto.NotificacionServidor;
 import com.bytesw.trg.core.dto.NotifyServerLocation;
 import com.bytesw.trg.tron.client.services.transport.ClientSideFilter;
@@ -47,7 +48,7 @@ public class TronClientServiceImpl implements TronClientService {
         private Integer serverMinPoolSize;
         private Integer clientListenerMaxPoolSize;
         private Integer clientListenerMinPoolSize;
-        
+
         private TCPNIOTransport filterTransport;
 
         private InetAddress clientListenerHost;
@@ -238,6 +239,16 @@ public class TronClientServiceImpl implements TronClientService {
 
         public void setClientListenerPort(Integer clientListenerPort) {
                 this.clientListenerPort = clientListenerPort;
+        }
+
+        @Override
+        public Queue<NotificacionServidor> getServerNotificationQueue() {
+                return this.queue;
+        }
+
+        @Override
+        public void writeToServer(ClientServerRequest request) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
 }
