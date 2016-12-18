@@ -37,6 +37,7 @@ public class ClientSideFilter extends BaseFilter {
                 try {
                         response = json.fromJson(jsonString, ClientServerRequest.class);
                         if (response != null) {
+                                logger.info("Received [" + response + "]");
                                 NotificacionServidor ns = new NotificacionServidor();
                                 ns.setAbandonarPartidaResponse(response.getAbandonarPartidaResponse());
                                 ns.setAutenticacionResponse(response.getAutenticacionResponse());

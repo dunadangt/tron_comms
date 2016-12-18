@@ -124,4 +124,9 @@ public class ClientServerRequest {
                 this.unirsePartidaResponse = unirsePartidaResponse;
         }
 
+        @Override
+        public String toString() {
+                return "ClientServerRequest{" + "abandonarPartidaRequest=" + abandonarPartidaRequest + ", actualizarEstadoRequest=" + actualizarEstadoRequest + ", autenticacionRequest=" + autenticacionRequest + ", crearPartidaRequest=" + crearPartidaRequest + ", listarPartidasRequest=" + listarPartidasRequest + ", unirsePartidaRequest=" + unirsePartidaRequest + ", iniciarPartidaRequest=" + iniciarPartidaRequest + ", abandonarPartidaResponse=" + abandonarPartidaResponse + ", autenticacionResponse=" + autenticacionResponse + ", crearPartidaResponse=" + crearPartidaResponse + ", iniciarPartidaResponse=" + iniciarPartidaResponse + ", listarPartidasResponse=" + listarPartidasResponse + ", unirsePartidaResponse=" + unirsePartidaResponse + '}';
+        }
+
 }

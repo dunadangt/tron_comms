@@ -120,7 +120,9 @@ public class TronClientServiceImpl implements TronClientService {
                 FilterChainBuilder filterChainBuilder = FilterChainBuilder.stateless();
                 filterChainBuilder.add(new TransportFilter());
                 filterChainBuilder.add(new StringFilter(Charset.forName("UTF-8")));
-                filterChainBuilder.add(new ClientSideFilter());
+                ClientSideFilter filter = new ClientSideFilter();
+                filter.setAnswerQueue(queue);
+                filterChainBuilder.add(filter);
 
                 transport = TCPNIOTransportBuilder.newInstance().build();
                 transport.setProcessor(filterChainBuilder.build());
@@ -145,6 +147,7 @@ public class TronClientServiceImpl implements TronClientService {
                 filterChainBuilderListener.add(new TransportFilter());
                 filterChainBuilderListener.add(new StringFilter(Charset.forName("UTF-8")));
                 ClientSideFilter clientSideFilter = new ClientSideFilter();
+                clientSideFilter.setAnswerQueue(queue);
                 filterChainBuilderListener.add(clientSideFilter);
 
                 filterTransport = TCPNIOTransportBuilder.newInstance().build();
@@ -255,6 +258,10 @@ public class TronClientServiceImpl implements TronClientService {
 
         @Override
         public void writeToServer(ClientServerRequest request) {
+                if (request.getAutenticacionRequest() != null) {
+                        request.getAutenticacionRequest().setAnswerAddress(clientListenerHost);
+                        request.getAutenticacionRequest().setAnswerPort(clientListenerPort);
+                }
                 Gson json = new Gson();
                 String jsonString = json.toJson(request);
                 Future<Connection> future = pool.take();

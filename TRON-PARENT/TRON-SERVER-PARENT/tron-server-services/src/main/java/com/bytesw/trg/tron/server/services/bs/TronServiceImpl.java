@@ -1,9 +1,22 @@
 package com.bytesw.trg.tron.server.services.bs;
 
+import com.bytesw.trg.core.bo.Usuario;
+import com.bytesw.trg.core.dto.AbandonarPartidaRequest;
+import com.bytesw.trg.core.dto.ActualizarEstadoRequest;
+import com.bytesw.trg.core.dto.AutenticacionRequest;
+import com.bytesw.trg.core.dto.ClientServerRequest;
+import com.bytesw.trg.core.dto.CrearPartidaRequest;
+import com.bytesw.trg.core.dto.IniciarPartidaRequest;
+import com.bytesw.trg.core.dto.IniciarPartidaResponse;
+import com.bytesw.trg.core.dto.ListarPartidasRequest;
+import com.bytesw.trg.core.dto.UnirsePartidaRequest;
+import com.bytesw.trg.tron.server.services.transport.ResponseNotifier;
 import com.bytesw.trg.tron.server.services.transport.ServerSideFilter;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
@@ -41,6 +54,9 @@ public class TronServiceImpl implements TronService {
         private Integer poolConnectionTimeoutInSeconds;
         private Integer writeTimeoutInSeconds;
         private Integer clientPoolSize;
+        private final Map<String, ResponseNotifier> notifierMap = new ConcurrentHashMap<>();
+        private final Map<String, Usuario> userMap = new ConcurrentHashMap<>();
+        private Usuario player1;
 
         JmDNS jmdns;
 
@@ -51,7 +67,7 @@ public class TronServiceImpl implements TronService {
                         filterChainBuilderListener.add(new TransportFilter());
                         filterChainBuilderListener.add(new StringFilter(Charset.forName("UTF-8")));
                         ServerSideFilter serverSideFilter = new ServerSideFilter();
-//                        serverSideFilter.setLockEntityServerService(this);
+                        serverSideFilter.setTronService(this);
                         filterChainBuilderListener.add(serverSideFilter);
 
                         listenerTransport = TCPNIOTransportBuilder.newInstance().build();
@@ -65,10 +81,10 @@ public class TronServiceImpl implements TronService {
                         listenerTransport.setWorkerThreadPool(listenerGS);
                         listenerTransport.setWorkerThreadPoolConfig(listenerLernelPoolConfig);
                         try {
-                                listenerTransport.bind(listenerPort);
+                                listenerTransport.bind(serverListenPort);
                                 listenerTransport.start();
 
-                                logger.info("Listener bound on port [" + listenerPort + "]");
+                                logger.info("Listener bound on port [" + serverListenPort + "]");
                         } catch (Exception e) {
                                 logger.error("Error iniciando listener.", e);
                                 throw e;
@@ -211,6 +227,82 @@ public class TronServiceImpl implements TronService {
 
         public void setClientPoolSize(Integer clientPoolSize) {
                 this.clientPoolSize = clientPoolSize;
+        }
+
+        @Override
+        public void abandonarPartidaRequest(AbandonarPartidaRequest request) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void actualizarEstadoRequest(ActualizarEstadoRequest request) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void autenticacionRequest(AutenticacionRequest request) {
+                if (notifierMap.containsKey(request.getUsuario().getUsername())) {
+                        ResponseNotifier notifier = notifierMap.get(request.getUsuario().getUsername());
+                        notifier.close();
+                        userMap.remove(request.getUsuario().getUsername());
+                }
+                ResponseNotifier notifier = new ResponseNotifier(request.getAnswerAddress().getHostAddress(), request.getAnswerPort(), 
+                        clientPoolSize, keepAliveTimeInSeconds, transactionTimeoutInSeconds, 
+                        corePoolSize, maxPoolSize, poolConnectionTimeoutInSeconds, writeTimeoutInSeconds);
+                notifierMap.put(request.getUsuario().getUsername(), notifier);
+                userMap.put(request.getUsuario().getUsername(), request.getUsuario());
+                try {
+                        notifier.init();
+                        if (player1 != null) {
+                                //response1 va a player2
+                                IniciarPartidaResponse response1 = new IniciarPartidaResponse();
+                                response1.getUsuarios().add(player1);
+                                player1.setPosition(1);
+                                
+                                //response2 va a player 1
+                                IniciarPartidaResponse response2 = new IniciarPartidaResponse();
+                                response2.getUsuarios().add(request.getUsuario());
+                                request.getUsuario().setUserAddress(request.getAnswerAddress());
+                                request.getUsuario().setUserPort(request.getAnswerPort());
+                                request.getUsuario().setPosition(2);
+                                
+                                ResponseNotifier player1Notifier = notifierMap.get(player1.getUsername());
+                                ClientServerRequest r1 = new ClientServerRequest();
+                                r1.setIniciarPartidaResponse(response1);
+                                ClientServerRequest r2 = new ClientServerRequest();
+                                r2.setIniciarPartidaResponse(response2);
+                                player1Notifier.sendResponse(r2);
+                                notifier.sendResponse(r1);
+                                player1 = null;
+                        } else {
+                                player1 = request.getUsuario();
+                                player1.setUserAddress(request.getAnswerAddress());
+                                player1.setUserPort(request.getAnswerPort());
+                        }
+                } catch (Exception ex) {
+                        logger.error("Error iniciando conexion de vuelta a cliente", ex);
+                }
+                
+        }
+
+        @Override
+        public void crearPartidaRequest(CrearPartidaRequest request) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void listarPartidasRequest(ListarPartidasRequest request) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void unirsePartidaRequest(UnirsePartidaRequest request) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void iniciarPartidaRequest(IniciarPartidaRequest request) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
 }
