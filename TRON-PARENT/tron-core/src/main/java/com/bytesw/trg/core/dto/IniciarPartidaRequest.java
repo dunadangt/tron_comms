@@ -4,7 +4,7 @@ package com.bytesw.trg.core.dto;
  *
  * @author lvasquez
  */
-public class CrearPartidaResponse {
+public class IniciarPartidaRequest {
 
         private Long matchId;
 

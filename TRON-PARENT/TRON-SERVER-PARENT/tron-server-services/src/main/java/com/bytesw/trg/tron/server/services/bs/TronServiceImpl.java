@@ -3,9 +3,7 @@ package com.bytesw.trg.tron.server.services.bs;
 import java.io.IOException;
 import java.net.InetAddress;
 import javax.jmdns.JmDNS;
-import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceInfo;
-import javax.jmdns.ServiceListener;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -20,12 +18,14 @@ public class TronServiceImpl implements TronService {
         private String serviceType;
         private String serviceName;
         private String serviceText;
+        private String serviceHost;
+        
         JmDNS jmdns;
 
         public void init() {
                 try {
                         logger.info("Registrando servidor");
-                        jmdns = JmDNS.create(InetAddress.getLocalHost());
+                        jmdns = JmDNS.create(InetAddress.getByName("192.168.0.7"));
                         ServiceInfo serviceInfo = ServiceInfo.create(serviceType, serviceName, serverListenPort, serviceText);
                         jmdns.registerService(serviceInfo);
                         logger.info("Servidor registrado [" + serviceInfo + "]");
@@ -70,4 +70,5 @@ public class TronServiceImpl implements TronService {
                 this.serviceText = serviceText;
         }
 
+        
 }

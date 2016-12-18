@@ -7,4 +7,6 @@ package com.bytesw.trg.tron.client.services.bs;
 public interface TronClientService {
         
         public void init();
+        
+        public void notifyServerFound(String host, Integer port);
 }

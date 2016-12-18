@@ -1,9 +1,10 @@
 package com.bytesw.trg.tron.client.services.bs;
 
+import com.bytesw.trg.core.dto.Notificacion;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.jmdns.JmDNS;
 import org.slf4j.LoggerFactory;
 
@@ -19,13 +20,16 @@ public class TronClientServiceImpl implements TronClientService {
         private String serviceName;
         private String serviceText;
         private JmDNS jmDNS;
+        private Queue<Notificacion> queue = new ConcurrentLinkedQueue();
 
         @Override
         public void init() {
                 try {
                         logger.info("Inicializando cliente");
                         jmDNS = JmDNS.create(InetAddress.getLocalHost());
-                        jmDNS.addServiceListener(serviceType, new TronServiceListener());
+                        TronServiceListener tronServiceListener = new TronServiceListener();
+                        tronServiceListener.setTronClientService(this);
+                        jmDNS.addServiceListener(serviceType, tronServiceListener);
                         logger.info("Cliente inicializado");
                 } catch (IOException ex) {
                         logger.error("Error en registro", ex);
@@ -56,4 +60,10 @@ public class TronClientServiceImpl implements TronClientService {
                 this.serviceText = serviceText;
         }
 
+        @Override
+        public void notifyServerFound(String host, Integer port) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        
 }
