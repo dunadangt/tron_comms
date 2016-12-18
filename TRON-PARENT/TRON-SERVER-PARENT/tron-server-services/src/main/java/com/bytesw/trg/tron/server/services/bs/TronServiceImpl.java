@@ -18,14 +18,14 @@ public class TronServiceImpl implements TronService {
         private String serviceType;
         private String serviceName;
         private String serviceText;
-        private String serviceHost;
-        
+        private String serviceListenAddress;
+
         JmDNS jmdns;
 
         public void init() {
                 try {
                         logger.info("Registrando servidor");
-                        jmdns = JmDNS.create(InetAddress.getByName("192.168.0.7"));
+                        jmdns = JmDNS.create(InetAddress.getByName(serviceListenAddress));
                         ServiceInfo serviceInfo = ServiceInfo.create(serviceType, serviceName, serverListenPort, serviceText);
                         jmdns.registerService(serviceInfo);
                         logger.info("Servidor registrado [" + serviceInfo + "]");
@@ -70,5 +70,12 @@ public class TronServiceImpl implements TronService {
                 this.serviceText = serviceText;
         }
 
-        
+        public String getServiceListenAddress() {
+                return serviceListenAddress;
+        }
+
+        public void setServiceListenAddress(String serviceListenAddress) {
+                this.serviceListenAddress = serviceListenAddress;
+        }
+
 }

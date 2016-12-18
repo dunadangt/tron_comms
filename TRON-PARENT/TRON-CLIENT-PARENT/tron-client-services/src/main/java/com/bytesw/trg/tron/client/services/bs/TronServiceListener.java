@@ -19,16 +19,6 @@ public class TronServiceListener implements ServiceListener {
         @Override
         public void serviceAdded(ServiceEvent se) {
                 logger.info("Service Added [" + se.getInfo() + "]");
-                Inet4Address[] addresses = se.getInfo().getInet4Addresses();
-                for (Inet4Address address : addresses) {
-                        logger.info("Address [" + address.getHostAddress() + "] [" + address.getHostName() + "]");
-                }
-                for (InetAddress address : se.getInfo().getInetAddresses()) {
-                        logger.info("Address [" + address.getHostAddress() + "] [" + address.getHostName() + "]");
-                }
-                for (Inet6Address address : se.getInfo().getInet6Addresses()) {
-                        logger.info("Address [" + address.getHostAddress() + "] [" + address.getHostName() + "]");
-                }
         }
 
         @Override
@@ -39,9 +29,8 @@ public class TronServiceListener implements ServiceListener {
         @Override
         public void serviceResolved(ServiceEvent se) {
                 logger.info("Service Resolved [" + se.getInfo() + "]");
-                Inet4Address[] addresses = se.getInfo().getInet4Addresses();
-                for (Inet4Address address : addresses) {
-                        logger.info("Address [" + address.getHostAddress() + "] [" + address.getHostName() + "]");
+                if (se.getInfo().getInetAddresses() != null && se.getInfo().getInetAddresses().length > 0) {
+                        getTronClientService().notifyServerFound(se.getInfo().getInetAddresses()[0], se.getInfo().getPort());
                 }
         }
 

@@ -8,22 +8,22 @@ import java.util.Queue;
  */
 public class ServerNotifier {
 
-        private Queue<ClientServerRequest> notifyToServerQueue;
-        private Queue<ClientServerResponse> receiveNotificationFromServer;
+        private Queue<NotificacionServidor> notifyToServerQueue;
+        private Queue<NotificacionServidor> receiveNotificationFromServer;
 
-        public Queue<ClientServerRequest> getNotifyToServerQueue() {
+        public Queue<NotificacionServidor> getNotifyToServerQueue() {
                 return notifyToServerQueue;
         }
 
-        public void setNotifyToServerQueue(Queue<ClientServerRequest> notifyToServerQueue) {
+        public void setNotifyToServerQueue(Queue<NotificacionServidor> notifyToServerQueue) {
                 this.notifyToServerQueue = notifyToServerQueue;
         }
 
-        public Queue<ClientServerResponse> getReceiveNotificationFromServer() {
+        public Queue<NotificacionServidor> getReceiveNotificationFromServer() {
                 return receiveNotificationFromServer;
         }
 
-        public void setReceiveNotificationFromServer(Queue<ClientServerResponse> receiveNotificationFromServer) {
+        public void setReceiveNotificationFromServer(Queue<NotificacionServidor> receiveNotificationFromServer) {
                 this.receiveNotificationFromServer = receiveNotificationFromServer;
         }
 

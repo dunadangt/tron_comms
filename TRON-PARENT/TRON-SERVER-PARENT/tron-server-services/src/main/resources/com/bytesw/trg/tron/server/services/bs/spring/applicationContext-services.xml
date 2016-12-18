@@ -6,6 +6,7 @@
         <property name="serviceType" value="${tron.service.type}"/>        
         <property name="serviceName" value="${tron.service.server.name}"/>        
         <property name="serviceText" value="${tron.service.server.text}"/>        
+        <property name="serviceListenAddress" value="${tron.service.listen.address}"/>        
     </bean>
     
     <bean id="serverPropertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">

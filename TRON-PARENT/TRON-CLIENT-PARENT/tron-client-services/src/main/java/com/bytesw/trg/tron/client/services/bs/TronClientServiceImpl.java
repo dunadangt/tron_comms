@@ -1,6 +1,7 @@
 package com.bytesw.trg.tron.client.services.bs;
 
-import com.bytesw.trg.core.dto.Notificacion;
+import com.bytesw.trg.core.dto.NotificacionServidor;
+import com.bytesw.trg.core.dto.NotifyServerLocation;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Queue;
@@ -15,12 +16,13 @@ import org.slf4j.LoggerFactory;
 public class TronClientServiceImpl implements TronClientService {
 
         static org.slf4j.Logger logger = LoggerFactory.getLogger(TronClientServiceImpl.class);
-        
+
         private String serviceType;
         private String serviceName;
         private String serviceText;
         private JmDNS jmDNS;
-        private Queue<Notificacion> queue = new ConcurrentLinkedQueue();
+        private final Queue<NotificacionServidor> queue = new ConcurrentLinkedQueue();
+        private NotifyServerLocation serverLocation;
 
         @Override
         public void init() {
@@ -61,9 +63,13 @@ public class TronClientServiceImpl implements TronClientService {
         }
 
         @Override
-        public void notifyServerFound(String host, Integer port) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        public void notifyServerFound(InetAddress host, Integer port) {
+                serverLocation = new NotifyServerLocation();
+                serverLocation.setServerAddress(host);
+                serverLocation.setPort(port);
+                NotificacionServidor notificacionServidor = new NotificacionServidor();
+                notificacionServidor.setNotifyServerLocation(serverLocation);
+                queue.offer(notificacionServidor);
         }
 
-        
 }

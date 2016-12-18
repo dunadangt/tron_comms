@@ -8,22 +8,22 @@ import java.util.Queue;
  */
 public class PlayerNotifier {
 
-        private Queue<Notificacion> notifyToUser;
-        private Queue<Notificacion> receiveNotificationFromUser;
+        private Queue<NotificacionJugador> notifyToUser;
+        private Queue<NotificacionJugador> receiveNotificationFromUser;
 
-        public Queue<Notificacion> getNotifyToUser() {
+        public Queue<NotificacionJugador> getNotifyToUser() {
                 return notifyToUser;
         }
 
-        public void setNotifyToUser(Queue<Notificacion> notifyToUser) {
+        public void setNotifyToUser(Queue<NotificacionJugador> notifyToUser) {
                 this.notifyToUser = notifyToUser;
         }
 
-        public Queue<Notificacion> getReceiveNotificationFromUser() {
+        public Queue<NotificacionJugador> getReceiveNotificationFromUser() {
                 return receiveNotificationFromUser;
         }
 
-        public void setReceiveNotificationFromUser(Queue<Notificacion> receiveNotificationFromUser) {
+        public void setReceiveNotificationFromUser(Queue<NotificacionJugador> receiveNotificationFromUser) {
                 this.receiveNotificationFromUser = receiveNotificationFromUser;
         }
 
