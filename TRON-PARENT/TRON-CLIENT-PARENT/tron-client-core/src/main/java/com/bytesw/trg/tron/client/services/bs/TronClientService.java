@@ -20,4 +20,6 @@ public interface TronClientService {
         public void writeToServer(ClientServerRequest request);
         
         public void notifyMatch(ClientServerRequest request);
+        
+        public void destroy();
 }

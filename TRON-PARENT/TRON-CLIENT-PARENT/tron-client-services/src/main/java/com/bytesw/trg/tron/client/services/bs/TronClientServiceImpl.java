@@ -78,6 +78,7 @@ public class TronClientServiceImpl implements TronClientService {
                 }
         }
 
+        @Override
         public void destroy() {
                 try {
                         transport.shutdownNow();
@@ -89,6 +90,8 @@ public class TronClientServiceImpl implements TronClientService {
                 } catch (IOException ex) {
                         logger.error("Error destruyendo transporte", ex);
                 }
+                oust.setRunning(false);
+                udpst.setRunning(false);
         }
 
         public String getServiceType() {
