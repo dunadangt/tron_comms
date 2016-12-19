@@ -91,7 +91,7 @@ public class TronServiceImpl implements TronService {
                         }
 
                         logger.info("Registrando servidor");
-                        jmdns = JmDNS.create(InetAddress.getByName(serviceListenAddress));
+                        jmdns = JmDNS.create(InetAddress.getLocalHost());
                         ServiceInfo serviceInfo = ServiceInfo.create(serviceType, serviceName, serverListenPort, serviceText);
                         jmdns.registerService(serviceInfo);
                         logger.info("Servidor registrado [" + serviceInfo + "]");
