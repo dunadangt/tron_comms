@@ -3,6 +3,7 @@ package com.bytesw.trg.tron.client.services.transport;
 import com.bytesw.trg.core.bo.Usuario;
 import com.bytesw.trg.core.dto.Evento;
 import com.bytesw.trg.core.dto.Match;
+import com.bytesw.trg.core.dto.Punto;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -44,6 +45,22 @@ public class OutgoingUDPSocketThread implements Runnable {
                                                 + ","
                                                 + String.valueOf(eventoSalida.getY())
                                                 + ",";
+                                        
+                                        StringBuilder puntos = new StringBuilder();
+                                        boolean first = true;
+                                        for (Punto punto : eventoSalida.getPuntos()) {
+                                                if (!first) {
+                                                        puntos.append("@");
+                                                }
+                                                puntos.append(String.valueOf(punto.getX()));
+                                                puntos.append(";");
+                                                puntos.append(String.valueOf(punto.getY()));
+                                                first = false;
+                                        }
+                                        puntos.append(",");
+                                        puntos.append(String.valueOf(eventoSalida.getSequence()));
+                                        puntos.append(",");
+                                        data = data + puntos.toString();
                                         System.arraycopy(data.getBytes(), 0, buffer, 0, data.getBytes().length);
                                         DatagramPacket packet = new DatagramPacket(buffer, MESSAGE_LENGTH, usuario.getUserAddress(), usuario.getGamePort());
                                         outgoingSocket.send(packet);

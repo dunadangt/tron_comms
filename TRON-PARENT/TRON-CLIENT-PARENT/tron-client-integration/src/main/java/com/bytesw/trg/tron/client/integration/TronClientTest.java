@@ -4,6 +4,7 @@ import com.bytesw.trg.core.bo.Usuario;
 import com.bytesw.trg.core.dto.AutenticacionRequest;
 import com.bytesw.trg.core.dto.ClientServerRequest;
 import com.bytesw.trg.core.dto.Evento;
+import com.bytesw.trg.core.dto.Punto;
 import com.bytesw.trg.tron.client.services.bs.TronClientServiceImpl;
 import com.bytesw.trg.tron.client.services.transport.UDPSocketThread;
 import java.util.logging.Level;
@@ -45,6 +46,16 @@ public class TronClientTest {
                                         evento.setUsername(username);
                                         evento.setX(10);
                                         evento.setY(16);
+                                        Punto punto1 = new Punto();
+                                        punto1.setX(1);
+                                        punto1.setY(1);
+                                        Punto punto2 = new Punto();
+                                        punto2.setX(1);
+                                        punto2.setY(1);
+                                        
+                                        evento.getPuntos().add(punto1);
+                                        evento.getPuntos().add(punto2);
+                                        evento.setSequence(100l);
                                         System.out.println("Enviando evento [" +  evento + "]");
                                         System.out.println("Enviando evento [" +  UDPSocketThread.currentMatch.getOutgoingEventQueue().size() + "]");
                                         UDPSocketThread.currentMatch.getOutgoingEventQueue().offer(evento);

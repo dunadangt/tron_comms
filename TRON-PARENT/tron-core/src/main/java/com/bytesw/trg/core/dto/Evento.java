@@ -1,5 +1,8 @@
 package com.bytesw.trg.core.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author lvasquez
@@ -10,6 +13,8 @@ public class Evento {
         private String username;
         private Integer x;
         private Integer y;
+        private List<Punto> puntos = new ArrayList<>();
+        private Long sequence;
 
         public Integer getTipo() {
                 return tipo;
@@ -43,10 +48,25 @@ public class Evento {
                 this.y = y;
         }
 
-        @Override
-        public String toString() {
-                return "Evento{" + "tipo=" + tipo + ", username=" + username + ", x=" + x + ", y=" + y + '}';
+        public List<Punto> getPuntos() {
+                return puntos;
         }
 
-        
+        public void setPuntos(List<Punto> puntos) {
+                this.puntos = puntos;
+        }
+
+        public Long getSequence() {
+                return sequence;
+        }
+
+        public void setSequence(Long sequence) {
+                this.sequence = sequence;
+        }
+
+        @Override
+        public String toString() {
+                return "Evento{" + "tipo=" + tipo + ", username=" + username + ", x=" + x + ", y=" + y + ", puntos=" + puntos + ", sequence=" + sequence + '}';
+        }
+
 }

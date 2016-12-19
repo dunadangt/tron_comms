@@ -4,6 +4,7 @@ import com.bytesw.trg.core.bo.Usuario;
 import com.bytesw.trg.core.dto.Evento;
 import com.bytesw.trg.core.dto.Match;
 import com.bytesw.trg.core.dto.NotificacionServidor;
+import com.bytesw.trg.core.dto.Punto;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -53,7 +54,7 @@ public class UDPSocketThread implements Runnable {
                                 DatagramPacket packet = new DatagramPacket(buffer, MESSAGE_LENGTH);
                                 socket.receive(packet);
                                 String[] data = new String(packet.getData()).split(",");
-                                logger.info("Package received [" + packet.getData() + "]");
+//                                logger.info("Package received [" + packet.getData() + "]");
                                 switch (data[0]) {
                                         case "0":
                                                 DatagramPacket answerPacket = new DatagramPacket(packet.getData(), MESSAGE_LENGTH, packet.getAddress(), packet.getPort());
@@ -63,19 +64,40 @@ public class UDPSocketThread implements Runnable {
                                                 break;
                                         case "1":
                                                 try {
-                                                        logger.info("Starting match soon");
-                                                        Thread.sleep(Long.valueOf(data[1]));
+                                                        logger.info("Starting match soon [" + data[1] + "]");
+                                                        Long time = Long.valueOf(data[1]);
+                                                        double d0 = time;
+                                                        Double d = d0 / 1000000;
+                                                        if (d < 1d) {
+                                                                Thread.sleep(0, time.intValue());
+                                                        } else {
+                                                                Thread.sleep(d.longValue());
+                                                        }
+                                                        
                                                         start();
                                                 } catch (InterruptedException ex) {
                                                         logger.error("Error en espera de inicio de juego", ex);
                                                 }
                                                 break;
                                         case "2":
+                                                logger.info("Data received[" + new String(packet.getData()) + "]");
                                                 Evento evento = new Evento();
                                                 evento.setUsername(data[1]);
                                                 evento.setTipo(Integer.valueOf(data[2]));
                                                 evento.setX(Integer.valueOf(data[3]));
                                                 evento.setY(Integer.valueOf(data[4]));
+                                                //data 5 trae puntos
+                                                logger.info("Points[" + data[5] +"]");
+                                                String[] points = data[5].split("@");
+                                                for (String s : points) {
+                                                        logger.info("Point [" + s + "]");
+                                                        String[] point = s.split(";");
+                                                        Punto punto = new Punto();
+                                                        punto.setX(Integer.valueOf(point[0]));
+                                                        punto.setY(Integer.valueOf(point[1]));
+                                                        evento.getPuntos().add(punto);
+                                                }
+                                                evento.setSequence(Long.valueOf(data[6]));
                                                 logger.info("Incoming Event[" + evento + "]");
                                                 match.getIncomingEventQueue().offer(evento);
                                                 
@@ -93,7 +115,7 @@ public class UDPSocketThread implements Runnable {
                 long times = 0l;
                 int j = 0;
                 for (int i = 0; i < 10; i++) {
-                        long time0 = System.currentTimeMillis();
+                        long time0 = System.nanoTime();
                         String d0 = "0," + time0 + ",";
                         byte[] messageBuffer = new byte[MESSAGE_LENGTH];
 
@@ -104,7 +126,9 @@ public class UDPSocketThread implements Runnable {
                                 DatagramPacket packet = new DatagramPacket(messageBuffer, MESSAGE_LENGTH, usuario.getUserAddress(), usuario.getGamePort());
                                 socket.send(packet);
                                 socket.receive(packet);
-                                times = times + (System.currentTimeMillis() - time0);
+                                long time = System.nanoTime() - time0;
+                                logger.info("Roundtrip time [" + time + "]");
+                                times = times + time;
                                 j++;
                                 logger.info("Tested rt [" + i + "]");
                         } catch (IOException ex) {
@@ -112,12 +136,13 @@ public class UDPSocketThread implements Runnable {
                         }
                 }
                 tripTime = times / ( j);
+                logger.info("Trip time [" + tripTime + "]");
         }
 
         public void notifyStart() {
                 Usuario usuario = usuarios.get(0);
                 byte[] messageBuffer = new byte[MESSAGE_LENGTH];
-                long time = 2000l - (tripTime);
+                long time = tripTime;
                 String d0 = "1," + time + ",";
                 System.arraycopy(d0.getBytes(), 0, messageBuffer, 0, d0.getBytes().length);
                 try {
@@ -143,6 +168,7 @@ public class UDPSocketThread implements Runnable {
                 NotificacionServidor ns = new NotificacionServidor();
                 ns.setMatch(match);
                 currentMatch = match;
+                logger.info("Notify now!");
                 getNotificacionServidorQueue().offer(ns);
         }
 
