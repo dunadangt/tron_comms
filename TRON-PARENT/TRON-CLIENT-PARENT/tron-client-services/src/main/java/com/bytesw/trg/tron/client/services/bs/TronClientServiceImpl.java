@@ -4,6 +4,7 @@ import com.bytesw.trg.core.dto.ClientServerRequest;
 import com.bytesw.trg.core.dto.NotificacionServidor;
 import com.bytesw.trg.core.dto.NotifyServerLocation;
 import com.bytesw.trg.tron.client.services.transport.ClientSideFilter;
+import com.bytesw.trg.tron.client.services.transport.OutgoingUDPSocketThread;
 import com.bytesw.trg.tron.client.services.transport.UDPSocketThread;
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -61,6 +62,7 @@ public class TronClientServiceImpl implements TronClientService {
         private Integer clientListenerPort;
         private Integer gamePort;
         private UDPSocketThread udpst;
+        private OutgoingUDPSocketThread oust;
         
         @Override
         public void init() {
@@ -174,7 +176,15 @@ public class TronClientServiceImpl implements TronClientService {
                         }
                         udpst = new UDPSocketThread();
                         udpst.setGamePort(gamePort);
+                        udpst.setNotificacionServidorQueue(queue);
                         udpst.init();
+                        
+                        oust = new OutgoingUDPSocketThread();
+                        filter.setOust(oust);
+                        filter.setUst(udpst);
+                        clientSideFilter.setOust(oust);
+                        clientSideFilter.setUst(udpst);
+                        
                         filterTransport.bind(clientListenerPort);
                         filterTransport.start();
                 } catch (Exception e) {

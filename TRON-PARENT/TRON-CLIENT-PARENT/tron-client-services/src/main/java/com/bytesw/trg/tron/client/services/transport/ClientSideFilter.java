@@ -1,5 +1,6 @@
 package com.bytesw.trg.tron.client.services.transport;
 
+import com.bytesw.trg.core.bo.Usuario;
 import com.bytesw.trg.core.dto.ClientServerRequest;
 import com.bytesw.trg.core.dto.Match;
 import com.bytesw.trg.core.dto.NotificacionServidor;
@@ -20,6 +21,8 @@ public class ClientSideFilter extends BaseFilter {
 
         static org.slf4j.Logger logger = LoggerFactory.getLogger(ClientSideFilter.class);
         private Queue<NotificacionServidor> answerQueue;
+        private UDPSocketThread ust;
+        private OutgoingUDPSocketThread oust;
 
         @Override
         public NextAction handleWrite(FilterChainContext ctx) throws IOException {
@@ -39,21 +42,31 @@ public class ClientSideFilter extends BaseFilter {
                         response = json.fromJson(jsonString, ClientServerRequest.class);
                         if (response != null) {
                                 logger.info("Received [" + response + "]");
-                                NotificacionServidor ns = new NotificacionServidor();
                                 if (response.getIniciarPartidaResponse() != null) {
                                         Match match = new Match();
                                         match.setJugadores(response.getIniciarPartidaResponse().getUsuarios());
+                                        oust.setUsuarios(response.getIniciarPartidaResponse().getUsuarios());
+                                        oust.setMatch(match);
+                                        Thread t = new Thread(oust);
+                                        t.start();
+                                        ust.setUsuarios(response.getIniciarPartidaResponse().getUsuarios());
+                                        ust.setMatch(match);
+
+                                        boolean owner = true;
+                                        for (Usuario usuario : response.getIniciarPartidaResponse().getUsuarios()) {
+                                                if (usuario.getPosition() == 1) {
+                                                        owner = false;
+                                                        break;
+                                                }
+                                        }
+                                        if (owner) {
+                                                ust.testRoundTrip();
+                                                ust.notifyStart();
+                                        } else {
+                                                Thread t2 = new Thread(ust);
+                                                t2.start();
+                                        }
                                 }
-//                                ns.setAbandonarPartidaResponse(response.getAbandonarPartidaResponse());
-//                                ns.setAutenticacionResponse(response.getAutenticacionResponse());
-//                                ns.setCrearPartidaResponse(response.getCrearPartidaResponse());
-//                                ns.setIniciarPartidaResponse(response.getIniciarPartidaResponse());
-//                                ns.setListarPartidasResponse(response.getListarPartidasResponse());
-//                                ns.setUnirsePartidaResponse(response.getUnirsePartidaResponse());
-//                                if (ns.getIniciarPartidaResponse() != null) {
-//                                        
-//                                }
-                                answerQueue.offer(ns);
                         }
                 } catch (JsonSyntaxException jsonSyntaxException) {
                         logger.error("Error en parseo de mensaje [" + jsonString + "]", jsonSyntaxException);
@@ -69,6 +82,14 @@ public class ClientSideFilter extends BaseFilter {
 
         public void setAnswerQueue(Queue<NotificacionServidor> answerQueue) {
                 this.answerQueue = answerQueue;
+        }
+
+        public void setUst(UDPSocketThread ust) {
+                this.ust = ust;
+        }
+
+        public void setOust(OutgoingUDPSocketThread oust) {
+                this.oust = oust;
         }
 
 }
