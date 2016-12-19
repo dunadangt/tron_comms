@@ -16,6 +16,8 @@ public class TronClientTest {
         public static void main(String[] args) {
                 TronClientServiceImpl service = new TronClientServiceImpl();
                 service.setServiceType("_tron._tcp.local.");
+                service.setServerListenAddress("172.16.5.55");
+                service.setServerListenPort(7777);
                 service.init();
                 while (service.getServerNotificationQueue().poll() == null) {
                         try {
@@ -30,5 +32,12 @@ public class TronClientTest {
                 request.getAutenticacionRequest().setUsuario(new Usuario());
                 request.getAutenticacionRequest().getUsuario().setUsername("prueba" + System.currentTimeMillis());
                 service.writeToServer(request);
+                while (true) {
+                        try {
+                                Thread.sleep(1000l);
+                        } catch (InterruptedException ex) {
+                                Logger.getLogger(TronClientTest.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                }
         }
 }

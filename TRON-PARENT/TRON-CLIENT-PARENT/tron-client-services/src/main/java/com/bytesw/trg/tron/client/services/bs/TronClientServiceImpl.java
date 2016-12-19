@@ -19,6 +19,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jmdns.JmDNS;
 import org.glassfish.grizzly.Connection;
 import org.glassfish.grizzly.connectionpool.SingleEndpointPool;
@@ -63,18 +65,25 @@ public class TronClientServiceImpl implements TronClientService {
         private Integer gamePort;
         private UDPSocketThread udpst;
         private OutgoingUDPSocketThread oust;
-        
+        private String serverListenAddress;
+        private Integer serverListenPort;
+
         @Override
         public void init() {
                 try {
-                        logger.info("Inicializando cliente");
-                        jmDNS = JmDNS.create(InetAddress.getLocalHost());
-                        TronServiceListener tronServiceListener = new TronServiceListener();
-                        tronServiceListener.setTronClientService(this);
-                        jmDNS.addServiceListener(serviceType, tronServiceListener);
-                        logger.info("Cliente inicializado");
-                } catch (IOException ex) {
-                        logger.error("Error en registro", ex);
+                        //                try {
+//                        logger.info("Inicializando cliente");
+//                        jmDNS = JmDNS.create(InetAddress.getLocalHost());
+//                        TronServiceListener tronServiceListener = new TronServiceListener();
+//                        tronServiceListener.setTronClientService(this);
+//                        jmDNS.addServiceListener(serviceType, tronServiceListener);
+//                        logger.info("Cliente inicializado");
+//                } catch (IOException ex) {
+//                        logger.error("Error en registro", ex);
+//                }
+                        notifyServerFound(InetAddress.getByName(serverListenAddress), serverListenPort, InetAddress.getLocalHost());
+                } catch (Exception ex) {
+                        logger.error("Error iniciando servicio", ex);
                 }
         }
 
@@ -181,13 +190,13 @@ public class TronClientServiceImpl implements TronClientService {
                         udpst.setGamePort(gamePort);
                         udpst.setNotificacionServidorQueue(queue);
                         udpst.init();
-                        
+
                         oust = new OutgoingUDPSocketThread();
                         filter.setOust(oust);
                         filter.setUst(udpst);
                         clientSideFilter.setOust(oust);
                         clientSideFilter.setUst(udpst);
-                        
+
                         filterTransport.bind(clientListenerPort);
                         filterTransport.start();
                 } catch (Exception e) {
@@ -311,6 +320,22 @@ public class TronClientServiceImpl implements TronClientService {
         @Override
         public void notifyMatch(ClientServerRequest request) {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        public String getServerListenAddress() {
+                return serverListenAddress;
+        }
+
+        public void setServerListenAddress(String serverListenAddress) {
+                this.serverListenAddress = serverListenAddress;
+        }
+
+        public Integer getServerListenPort() {
+                return serverListenPort;
+        }
+
+        public void setServerListenPort(Integer serverListenPort) {
+                this.serverListenPort = serverListenPort;
         }
 
 }

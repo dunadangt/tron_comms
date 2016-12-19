@@ -14,10 +14,13 @@ import com.bytesw.trg.tron.server.services.transport.ResponseNotifier;
 import com.bytesw.trg.tron.server.services.transport.ServerSideFilter;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
 import org.glassfish.grizzly.filterchain.FilterChainBuilder;
@@ -57,6 +60,7 @@ public class TronServiceImpl implements TronService {
         private final Map<String, ResponseNotifier> notifierMap = new ConcurrentHashMap<>();
         private final Map<String, Usuario> userMap = new ConcurrentHashMap<>();
         private Usuario player1;
+        private ServerSocket adminSocket;
 
         JmDNS jmdns;
 
@@ -89,12 +93,19 @@ public class TronServiceImpl implements TronService {
                                 logger.error("Error iniciando listener.", e);
                                 throw e;
                         }
-
-                        logger.info("Registrando servidor");
-                        jmdns = JmDNS.create(InetAddress.getLocalHost());
-                        ServiceInfo serviceInfo = ServiceInfo.create(serviceType, serviceName, serverListenPort, serviceText);
-                        jmdns.registerService(serviceInfo);
-                        logger.info("Servidor registrado [" + serviceInfo + "]");
+//
+//                        logger.info("Registrando servidor");
+//                        jmdns = JmDNS.create(serviceListenAddress);
+//                        
+//                        ServiceInfo serviceInfo = ServiceInfo.create(serviceType, serviceName, serverListenPort, serviceText);
+//                        logger.info("Registrando [" + serviceInfo + "]");
+//                        jmdns.registerService(serviceInfo);
+//                        logger.info("Servidor registrado [" + serviceInfo + "]");
+//                        logger.info("JMDNS[" + jmdns + "]");
+//                        for (InetAddress address : serviceInfo.getInetAddresses()) {
+//                                logger.info("Address [" + address + "]");
+//                        }
+                        
                 } catch (IOException ex) {
                         logger.error("Error de inicializacion.", ex);
                 }

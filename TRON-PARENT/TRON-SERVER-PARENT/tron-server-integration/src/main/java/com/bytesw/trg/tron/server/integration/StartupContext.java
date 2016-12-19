@@ -2,7 +2,11 @@ package com.bytesw.trg.tron.server.integration;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -38,6 +42,15 @@ public class StartupContext {
 
                 //        "classpath:/com/bytesw/ocs/rpi/ri/bs/spring/applicationContext-ocs-ri-persistence.xml"
                 ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:/com/bytesw/trg/tron/server/services/bs/spring/applicationContext-services.xml");
+                try {
+                        ServerSocket adminSocket = new ServerSocket(0);
+                        while (adminSocket.accept() != null) {
+                                
+                        }
+                } catch (IOException ex) {
+                        logger.error("Error levantando servicio", ex);
+                }
+                
         }
 
 }

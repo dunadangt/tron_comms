@@ -85,6 +85,9 @@ public class ResponseNotifier {
                 }
 
                 String host = responseHost;
+                if (host.startsWith("/")) {
+                        host = host.replace("/", "");
+                }
                 int port = responsePort;
                 int poolSize = clientPoolSize;
 
