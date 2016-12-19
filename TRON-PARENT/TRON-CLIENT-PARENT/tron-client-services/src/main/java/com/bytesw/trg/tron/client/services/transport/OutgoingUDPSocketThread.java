@@ -31,10 +31,10 @@ public class OutgoingUDPSocketThread implements Runnable {
                 while (running) {
                         try {
                                 Evento eventoSalida = match.getOutgoingEventQueue().poll();
-                                logger.info("checking outgoing queue [" + match.getOutgoingEventQueue().size() + "]");
+//                                logger.info("checking outgoing queue [" + match.getOutgoingEventQueue().size() + "]");
                                 
                                 while (eventoSalida != null) {
-                                        logger.info("Outgoing message [" + eventoSalida + "]");
+//                                        logger.info("Outgoing message [" + eventoSalida + "]");
                                         Usuario usuario = usuarios.get(0);
                                         DatagramSocket outgoingSocket = new DatagramSocket();
                                         byte[] buffer = new byte[MESSAGE_LENGTH];

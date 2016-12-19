@@ -111,13 +111,13 @@ public class UDPSocketThread implements Runnable {
                                 Logger.getLogger(UDPSocketThread.class.getName()).log(Level.SEVERE, null, ex);
                         }
                 }
-                tripTime = times / (2 * j);
+                tripTime = times / ( j);
         }
 
         public void notifyStart() {
                 Usuario usuario = usuarios.get(0);
                 byte[] messageBuffer = new byte[MESSAGE_LENGTH];
-                long time = 2000l - tripTime;
+                long time = 2000l - (tripTime);
                 String d0 = "1," + time + ",";
                 System.arraycopy(d0.getBytes(), 0, messageBuffer, 0, d0.getBytes().length);
                 try {
