@@ -65,11 +65,12 @@ public class UDPSocketThread implements Runnable {
                                         case "1":
                                                 try {
                                                         logger.info("Starting match soon [" + data[1] + "]");
+                                                        Long dt = 2000l * 1000000;
                                                         Long time = Long.valueOf(data[1]);
-                                                        double d0 = time;
-                                                        Double d = d0 / 1000000;
+                                                        dt = dt - time;
+                                                        Double d = dt.doubleValue() / 1000000;
                                                         if (d < 1d) {
-                                                                Thread.sleep(1000l, time.intValue());
+                                                                Thread.sleep(0, d.intValue());
                                                         } else {
                                                                 Thread.sleep(2000l - d.longValue());
                                                         }
