@@ -63,22 +63,22 @@ public class UDPSocketThread implements Runnable {
                                                 socket.send(answerPacket);
                                                 break;
                                         case "1":
-                                                try {
-                                                        logger.info("Starting match soon [" + data[1] + "]");
-                                                        Long dt = 2000l * 1000000;
-                                                        Long time = Long.valueOf(data[1]);
-                                                        dt = dt - time;
-                                                        Double d = dt.doubleValue() / 1000000;
-                                                        if (d < 1d) {
-                                                                Thread.sleep(0, d.intValue());
-                                                        } else {
-                                                                Thread.sleep(2000l - d.longValue());
-                                                        }
+//                                                try {
+                                                logger.info("Starting match soon [" + data[1] + "]");
+//                                                        Long dt = 2000l * 1000000;
+//                                                        Long time = Long.valueOf(data[1]);
+//                                                        dt = dt - time;
+//                                                        Double d = dt.doubleValue() / 1000000;
+//                                                        if (d < 1d) {
+//                                                                Thread.sleep(0, d.intValue());
+//                                                        } else {
+//                                                                Thread.sleep(2000l - d.longValue());
+//                                                        }
 
-                                                        start();
-                                                } catch (InterruptedException ex) {
-                                                        logger.error("Error en espera de inicio de juego", ex);
-                                                }
+                                                start();
+//                                                } catch (InterruptedException ex) {
+//                                                        logger.error("Error en espera de inicio de juego", ex);
+//                                                }
                                                 break;
                                         case "2":
                                                 logger.info("Data received[" + new String(packet.getData()) + "]");
@@ -145,7 +145,7 @@ public class UDPSocketThread implements Runnable {
         public void notifyStart() {
                 Usuario usuario = usuarios.get(0);
                 byte[] messageBuffer = new byte[MESSAGE_LENGTH];
-                long time = tripTime;
+                Long time = tripTime / 2;
                 String d0 = "1," + time + ",";
                 System.arraycopy(d0.getBytes(), 0, messageBuffer, 0, d0.getBytes().length);
                 try {
@@ -154,9 +154,16 @@ public class UDPSocketThread implements Runnable {
                 } catch (IOException ex) {
                         Logger.getLogger(UDPSocketThread.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
                 try {
-                        logger.info("Notify start");
-                        Thread.sleep(2000l);
+                        Double d = time.doubleValue() / 1000000;
+                        if (d < 1d) {
+                                Thread.sleep(0, d.intValue());
+                        } else {
+                                Thread.sleep(d.longValue());
+                        }
+//                        logger.info("Notify start");
+//                        Thread.sleep(2000l);
                         Thread t = new Thread(this);
                         t.start();
                         start();
