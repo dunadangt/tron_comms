@@ -69,9 +69,9 @@ public class UDPSocketThread implements Runnable {
                                                         double d0 = time;
                                                         Double d = d0 / 1000000;
                                                         if (d < 1d) {
-                                                                Thread.sleep(0, time.intValue());
+                                                                Thread.sleep(1000l, time.intValue());
                                                         } else {
-                                                                Thread.sleep(d.longValue());
+                                                                Thread.sleep(2000l - d.longValue());
                                                         }
 
                                                         start();
