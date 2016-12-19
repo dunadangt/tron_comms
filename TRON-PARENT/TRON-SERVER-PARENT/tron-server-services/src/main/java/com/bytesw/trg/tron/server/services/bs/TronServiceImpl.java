@@ -264,6 +264,7 @@ public class TronServiceImpl implements TronService {
                                 response2.getUsuarios().add(request.getUsuario());
                                 request.getUsuario().setUserAddress(request.getAnswerAddress());
                                 request.getUsuario().setUserPort(request.getAnswerPort());
+                                request.getUsuario().setGamePort(request.getGamePort());
                                 request.getUsuario().setPosition(2);
                                 
                                 ResponseNotifier player1Notifier = notifierMap.get(player1.getUsername());
@@ -278,6 +279,7 @@ public class TronServiceImpl implements TronService {
                                 player1 = request.getUsuario();
                                 player1.setUserAddress(request.getAnswerAddress());
                                 player1.setUserPort(request.getAnswerPort());
+                                player1.setGamePort(request.getGamePort());
                         }
                 } catch (Exception ex) {
                         logger.error("Error iniciando conexion de vuelta a cliente", ex);

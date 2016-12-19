@@ -4,6 +4,7 @@ import com.bytesw.trg.core.dto.ClientServerRequest;
 import com.bytesw.trg.core.dto.NotificacionServidor;
 import com.bytesw.trg.core.dto.NotifyServerLocation;
 import com.bytesw.trg.tron.client.services.transport.ClientSideFilter;
+import com.bytesw.trg.tron.client.services.transport.UDPSocketThread;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -58,7 +59,9 @@ public class TronClientServiceImpl implements TronClientService {
 
         private InetAddress clientListenerHost;
         private Integer clientListenerPort;
-
+        private Integer gamePort;
+        private UDPSocketThread udpst;
+        
         @Override
         public void init() {
                 try {
@@ -165,6 +168,13 @@ public class TronClientServiceImpl implements TronClientService {
                                 clientListenerPort = serverSocket.getLocalPort();
                                 serverSocket.close();
                         }
+                        try (ServerSocket serverSocket = new ServerSocket(0)) {
+                                gamePort = serverSocket.getLocalPort();
+                                serverSocket.close();
+                        }
+                        udpst = new UDPSocketThread();
+                        udpst.setGamePort(gamePort);
+                        udpst.init();
                         filterTransport.bind(clientListenerPort);
                         filterTransport.start();
                 } catch (Exception e) {
@@ -261,6 +271,7 @@ public class TronClientServiceImpl implements TronClientService {
                 if (request.getAutenticacionRequest() != null) {
                         request.getAutenticacionRequest().setAnswerAddress(clientListenerHost);
                         request.getAutenticacionRequest().setAnswerPort(clientListenerPort);
+                        request.getAutenticacionRequest().setGamePort(gamePort);
                 }
                 Gson json = new Gson();
                 String jsonString = json.toJson(request);
@@ -282,6 +293,11 @@ public class TronClientServiceImpl implements TronClientService {
                                 }
                         }
                 }
+        }
+
+        @Override
+        public void notifyMatch(ClientServerRequest request) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
 }

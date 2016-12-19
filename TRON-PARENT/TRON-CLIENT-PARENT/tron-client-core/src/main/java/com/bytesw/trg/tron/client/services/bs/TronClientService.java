@@ -18,4 +18,6 @@ public interface TronClientService {
         public Queue<NotificacionServidor> getServerNotificationQueue();
         
         public void writeToServer(ClientServerRequest request);
+        
+        public void notifyMatch(ClientServerRequest request);
 }

@@ -1,6 +1,7 @@
 package com.bytesw.trg.tron.client.services.transport;
 
 import com.bytesw.trg.core.dto.ClientServerRequest;
+import com.bytesw.trg.core.dto.Match;
 import com.bytesw.trg.core.dto.NotificacionServidor;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -39,12 +40,19 @@ public class ClientSideFilter extends BaseFilter {
                         if (response != null) {
                                 logger.info("Received [" + response + "]");
                                 NotificacionServidor ns = new NotificacionServidor();
-                                ns.setAbandonarPartidaResponse(response.getAbandonarPartidaResponse());
-                                ns.setAutenticacionResponse(response.getAutenticacionResponse());
-                                ns.setCrearPartidaResponse(response.getCrearPartidaResponse());
-                                ns.setIniciarPartidaResponse(response.getIniciarPartidaResponse());
-                                ns.setListarPartidasResponse(response.getListarPartidasResponse());
-                                ns.setUnirsePartidaResponse(response.getUnirsePartidaResponse());
+                                if (response.getIniciarPartidaResponse() != null) {
+                                        Match match = new Match();
+                                        match.setJugadores(response.getIniciarPartidaResponse().getUsuarios());
+                                }
+//                                ns.setAbandonarPartidaResponse(response.getAbandonarPartidaResponse());
+//                                ns.setAutenticacionResponse(response.getAutenticacionResponse());
+//                                ns.setCrearPartidaResponse(response.getCrearPartidaResponse());
+//                                ns.setIniciarPartidaResponse(response.getIniciarPartidaResponse());
+//                                ns.setListarPartidasResponse(response.getListarPartidasResponse());
+//                                ns.setUnirsePartidaResponse(response.getUnirsePartidaResponse());
+//                                if (ns.getIniciarPartidaResponse() != null) {
+//                                        
+//                                }
                                 answerQueue.offer(ns);
                         }
                 } catch (JsonSyntaxException jsonSyntaxException) {

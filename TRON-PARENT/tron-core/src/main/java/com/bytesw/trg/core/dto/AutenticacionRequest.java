@@ -13,6 +13,7 @@ public class AutenticacionRequest {
 
         private InetAddress answerAddress;
         private Integer answerPort;
+        private Integer gamePort;
 
         public Usuario getUsuario() {
                 return usuario;
@@ -36,6 +37,14 @@ public class AutenticacionRequest {
 
         public void setAnswerPort(Integer answerPort) {
                 this.answerPort = answerPort;
+        }
+
+        public Integer getGamePort() {
+                return gamePort;
+        }
+
+        public void setGamePort(Integer gamePort) {
+                this.gamePort = gamePort;
         }
 
 }

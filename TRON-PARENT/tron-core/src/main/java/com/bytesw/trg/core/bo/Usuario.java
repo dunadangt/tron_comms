@@ -12,6 +12,7 @@ public class Usuario {
         private Integer position;
         private InetAddress userAddress;
         private Integer userPort;
+        private Integer gamePort;
 
         public String getUsername() {
                 return username;
@@ -43,6 +44,14 @@ public class Usuario {
 
         public void setUserPort(Integer userPort) {
                 this.userPort = userPort;
+        }
+
+        public Integer getGamePort() {
+                return gamePort;
+        }
+
+        public void setGamePort(Integer gamePort) {
+                this.gamePort = gamePort;
         }
 
         @Override
