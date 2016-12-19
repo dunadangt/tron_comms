@@ -73,7 +73,7 @@ public class UDPSocketThread implements Runnable {
                                                         } else {
                                                                 Thread.sleep(d.longValue());
                                                         }
-                                                        
+
                                                         start();
                                                 } catch (InterruptedException ex) {
                                                         logger.error("Error en espera de inicio de juego", ex);
@@ -87,20 +87,22 @@ public class UDPSocketThread implements Runnable {
                                                 evento.setX(Integer.valueOf(data[3]));
                                                 evento.setY(Integer.valueOf(data[4]));
                                                 //data 5 trae puntos
-                                                logger.info("Points[" + data[5] +"]");
+                                                logger.info("Points[" + data[5] + "]");
                                                 String[] points = data[5].split("@");
                                                 for (String s : points) {
                                                         logger.info("Point [" + s + "]");
                                                         String[] point = s.split(";");
-                                                        Punto punto = new Punto();
-                                                        punto.setX(Integer.valueOf(point[0]));
-                                                        punto.setY(Integer.valueOf(point[1]));
-                                                        evento.getPuntos().add(punto);
+                                                        if (point.length == 2) {
+                                                                Punto punto = new Punto();
+                                                                punto.setX(Integer.valueOf(point[0]));
+                                                                punto.setY(Integer.valueOf(point[1]));
+                                                                evento.getPuntos().add(punto);
+                                                        }
                                                 }
                                                 evento.setSequence(Long.valueOf(data[6]));
                                                 logger.info("Incoming Event[" + evento + "]");
                                                 match.getIncomingEventQueue().offer(evento);
-                                                
+
                                                 break;
                                 }
                         } catch (IOException ex) {
@@ -135,7 +137,7 @@ public class UDPSocketThread implements Runnable {
                                 Logger.getLogger(UDPSocketThread.class.getName()).log(Level.SEVERE, null, ex);
                         }
                 }
-                tripTime = times / ( j);
+                tripTime = times / (j);
                 logger.info("Trip time [" + tripTime + "]");
         }
 

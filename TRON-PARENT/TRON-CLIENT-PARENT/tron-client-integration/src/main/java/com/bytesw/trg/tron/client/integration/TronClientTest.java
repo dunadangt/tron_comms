@@ -53,8 +53,8 @@ public class TronClientTest {
                                         punto2.setX(1);
                                         punto2.setY(1);
                                         
-                                        evento.getPuntos().add(punto1);
-                                        evento.getPuntos().add(punto2);
+//                                        evento.getPuntos().add(punto1);
+//                                        evento.getPuntos().add(punto2);
                                         evento.setSequence(100l);
                                         System.out.println("Enviando evento [" +  evento + "]");
                                         System.out.println("Enviando evento [" +  UDPSocketThread.currentMatch.getOutgoingEventQueue().size() + "]");
