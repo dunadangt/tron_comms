@@ -31,6 +31,7 @@ public class UDPSocketThread implements Runnable {
         private Match match;
         private Queue<NotificacionServidor> notificacionServidorQueue;
         private boolean running = true;
+        public static Match currentMatch = null;
 
         public void init() {
                 try {
@@ -137,10 +138,11 @@ public class UDPSocketThread implements Runnable {
         }
 
         public void start() {
-                match = new Match();
-                match.setJugadores(usuarios);
+//                match = new Match();
+//                match.setJugadores(usuarios);
                 NotificacionServidor ns = new NotificacionServidor();
                 ns.setMatch(match);
+                currentMatch = match;
                 getNotificacionServidorQueue().offer(ns);
         }
 

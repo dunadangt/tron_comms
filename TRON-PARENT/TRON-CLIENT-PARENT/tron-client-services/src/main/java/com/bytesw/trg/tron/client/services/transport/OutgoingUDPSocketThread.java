@@ -30,8 +30,10 @@ public class OutgoingUDPSocketThread implements Runnable {
         public void run() {
                 while (running) {
                         try {
-                                Evento eventoSalida;
-                                while ((eventoSalida = match.getOutgoingEventQueue().poll()) != null) {
+                                Evento eventoSalida = match.getOutgoingEventQueue().poll();
+                                logger.info("checking outgoing queue [" + match.getOutgoingEventQueue().size() + "]");
+                                
+                                while (eventoSalida != null) {
                                         logger.info("Outgoing message [" + eventoSalida + "]");
                                         Usuario usuario = usuarios.get(0);
                                         DatagramSocket outgoingSocket = new DatagramSocket();
@@ -45,6 +47,7 @@ public class OutgoingUDPSocketThread implements Runnable {
                                         System.arraycopy(data.getBytes(), 0, buffer, 0, data.getBytes().length);
                                         DatagramPacket packet = new DatagramPacket(buffer, MESSAGE_LENGTH, usuario.getUserAddress(), usuario.getGamePort());
                                         outgoingSocket.send(packet);
+                                        eventoSalida = match.getOutgoingEventQueue().poll();
                                 }
                                 try {
                                         Thread.sleep(50l);

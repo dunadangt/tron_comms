@@ -3,7 +3,9 @@ package com.bytesw.trg.tron.client.integration;
 import com.bytesw.trg.core.bo.Usuario;
 import com.bytesw.trg.core.dto.AutenticacionRequest;
 import com.bytesw.trg.core.dto.ClientServerRequest;
+import com.bytesw.trg.core.dto.Evento;
 import com.bytesw.trg.tron.client.services.bs.TronClientServiceImpl;
+import com.bytesw.trg.tron.client.services.transport.UDPSocketThread;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,11 +32,23 @@ public class TronClientTest {
                 ClientServerRequest request = new ClientServerRequest();
                 request.setAutenticacionRequest(new AutenticacionRequest());
                 request.getAutenticacionRequest().setUsuario(new Usuario());
-                request.getAutenticacionRequest().getUsuario().setUsername("prueba" + System.currentTimeMillis());
+                String username = "prueba" + System.currentTimeMillis();
+                request.getAutenticacionRequest().getUsuario().setUsername(username);
                 service.writeToServer(request);
                 while (true) {
                         try {
                                 Thread.sleep(1000l);
+                                if (UDPSocketThread.currentMatch != null) {
+                                        System.out.println("Ya existe match");
+                                        Evento evento = new Evento();
+                                        evento.setTipo(1);
+                                        evento.setUsername(username);
+                                        evento.setX(10);
+                                        evento.setY(16);
+                                        System.out.println("Enviando evento [" +  evento + "]");
+                                        System.out.println("Enviando evento [" +  UDPSocketThread.currentMatch.getOutgoingEventQueue().size() + "]");
+                                        UDPSocketThread.currentMatch.getOutgoingEventQueue().offer(evento);
+                                }
                         } catch (InterruptedException ex) {
                                 Logger.getLogger(TronClientTest.class.getName()).log(Level.SEVERE, null, ex);
                         }
